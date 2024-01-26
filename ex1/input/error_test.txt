@@ -1,0 +1,4 @@
+int i := 32767
+// beans
+/* i am groot
+*/
