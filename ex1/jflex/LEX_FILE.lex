@@ -75,8 +75,12 @@ WhiteSpace      = {LineTerminator} | [ \t]
 INTEGER         = 0 | [1-9][0-9]*
 ID              = [A-Za-z][A-Za-z0-9]*
 STRING          = \"[A-Za-z]*\"
-CommentChar1       = [A-Za-z0-9\(\)\[\]\{\}?!\+\-\*\/\.\;] | [ \t]
-CommentChar2       = [A-Za-z0-9\(\)\[\]\{\}?!\+\-\*\/\.\;] | {WhiteSpace}
+InputChar       = [^\n\r]
+CommentChar1    = [A-Za-z0-9\(\)\[\]\{\}\?\!\+\-\*\/\.\;] | [ \t]
+CommentChar2    = [A-Za-z0-9\(\)\[\]\{\}\?\!\+\-\.\;] | {WhiteSpace}
+Comment1        = "//"{CommentChar1}*
+Comment1Error   = "//"{InputChar}*
+Comment2        = "/*"({CommentChar2} | [/] | \*+{CommentChar2})* \*+"/"
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -127,9 +131,11 @@ nil                     { return symbol(TokenNames.NIL); }
 {INTEGER}               { return symbol(TokenNames.INT, new Integer(yytext())); }
 {ID}                    { return symbol(TokenNames.ID, new String(yytext())); }
 {WhiteSpace}            { /* just skip what was found, do nothing */ }
-"//"{CommentChar1}*     { /* comment, just skip what was found, do nothing */ }
-"/*"{CommentChar2}*"*/" { /* comment, just skip what was found, do nothing */ }
+{Comment1}              { /* comment, just skip what was found, do nothing */ }
+{Comment2}              { /* comment, just skip what was found, do nothing */ }
 <<EOF>>                 { return symbol(TokenNames.EOF); }
+{Comment1Error}         { return symbol(TokenNames.ERROR); }
 "/*"                    { return symbol(TokenNames.ERROR); }
 .                       { return symbol(TokenNames.ERROR); }
+[0-9]*                  { return symbol(TokenNames.ERROR); }
 }
