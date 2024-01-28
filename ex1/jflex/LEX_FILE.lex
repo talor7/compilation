@@ -78,8 +78,8 @@ STRING          = \"[A-Za-z]*\"
 InputChar       = [^\n\r]
 CommentChar1    = [A-Za-z0-9\(\)\[\]\{\}\?\!\+\-\*\/\.\;] | [ \t]
 CommentChar2    = [A-Za-z0-9\(\)\[\]\{\}\?\!\+\-\.\;] | {WhiteSpace}
-Comment1        = "//"{CommentChar1}*
-Comment1Error   = "//"{InputChar}*
+Comment1        = "//"{CommentChar1}*{LineTerminator}
+Comment1Error   = "//"{InputChar}*{LineTerminator}
 Comment2        = "/*"({CommentChar2} | [/] | \*+{CommentChar2})* \*+"/"
 
 /******************************/
