@@ -1,14 +1,17 @@
 package AST;
 
-public class AST_STMT_IF extends AST_STMT
+/**
+ * AST_STMT_RETURN
+ */
+public class AST_STMT_RETURN extends AST_STMT
 {
-	public AST_EXP cond;
-	public AST_STMT_LIST body;
 
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
-	public AST_STMT_IF(AST_EXP cond, AST_STMT_LIST body)
+    public AST_EXP exp;
+
+	/******************/
+	/* CONSTRUCTOR(S) */
+	/******************/
+	public AST_STMT_RETURN(AST_EXP exp)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -18,10 +21,13 @@ public class AST_STMT_IF extends AST_STMT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== stmt -> IF (exp) { stmtList };\n");
+		if (exp != null) System.out.print("====================== stmt -> RETURN exp;\n");
+		if (exp == null) System.out.print("====================== stmt -> RETURN;\n");
 
-		this.cond = cond;
-		this.body = body;
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
+		this.exp = exp;
 	}
 	
 	/***********************************************/
@@ -32,25 +38,24 @@ public class AST_STMT_IF extends AST_STMT
 		/************************************/
 		/* AST NODE TYPE = RETURN STMT AST NODE */
 		/************************************/
-		System.out.print("AST NODE IF STMT\n");
+		System.out.print("AST NODE RETURN STMT\n");
 
 		/*****************************/
 		/* RECURSIVELY PRINT exp ... */
 		/*****************************/
-		if (cond != null) cond.PrintMe();
-		if (body != null) body.PrintMe();
+		if (exp != null) exp.PrintMe();
 		
 		/*********************************/
 		/* Print to AST GRAPHIZ DOT file */
 		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"IF");
+			"RETURN STMT\n");
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (cond != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, cond.SerialNumber);
-		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, body.SerialNumber);
+		if (exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+			
 	}
 }

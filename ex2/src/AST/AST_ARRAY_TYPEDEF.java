@@ -1,15 +1,18 @@
 package AST;
 
-public class AST_EXP_BINOP extends AST_EXP
+/**
+ * AST_ARRAY_TYPEDEF
+ */
+public class AST_ARRAY_TYPEDEF extends AST_Node
 {
-	public AST_BINOP OP;
-	public AST_EXP left;
-	public AST_EXP right;
-	
-	/******************/
+
+    public String id;
+    public AST_TYPE type;
+
+    /******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_BINOP(AST_EXP left, AST_EXP right, AST_BINOP OP)
+	public AST_ARRAY_TYPEDEF(String id, AST_TYPE type)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -19,45 +22,43 @@ public class AST_EXP_BINOP extends AST_EXP
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== exp -> exp BINOP exp\n");
+		System.out.format("====================== arrayTypedef -> Array ID( %s ) EQ type[]\n", id);
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.left = left;
-		this.right = right;
-		this.OP = OP;
+		this.type = type;
+		this.id = id;
+    
 	}
-	
+
 	/*************************************************/
-	/* The printing message for a binop exp AST node */
+	/* The printing message for a field var AST node */
 	/*************************************************/
 	public void PrintMe()
 	{
 		/*************************************/
-		/* AST NODE TYPE = AST BINOP EXP */
+		/* AST NODE TYPE = AST ARRAY TYPEDEF */
 		/*************************************/
-		System.out.print("AST NODE BINOP EXP\n");
+		System.out.print("AST NODE ARRAY TYPEDEF\n");
 
-		/**************************************/
-		/* RECURSIVELY PRINT left + right ... */
-		/**************************************/
-		if (left != null) left.PrintMe();
-		if (OP != null) OP.PrintMe();
-		if (right != null) right.PrintMe();
-		
+		/**********************************************/
+		/* RECURSIVELY PRINT type, then id        ... */
+		/**********************************************/
+        
+		if (type != null) type.PrintMe();
+        System.out.format("ARRAY name %s", id);
+
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			String.format("EXP BINOP"));
+			String.format("ArrayTypeDef (%s)", id));
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (left  != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,left.SerialNumber);
-		if (OP    != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,OP.SerialNumber);
-		if (right != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,right.SerialNumber);
-	}
+		if (type != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, type.SerialNumber);
+    }
 }
