@@ -26,7 +26,7 @@ parser code
         System.out.print(lexer.getLine());
         System.out.print(":");
         System.out.print(lexer.getCharPos());
-        System.out.print("] ");
+        System.out.print("]\n");
         System.exit(0);
     }
 :}
@@ -38,12 +38,25 @@ scan with
 {:
     Symbol s;
     s = lexer.next_token();
+    if (s.sym == TokenNames.ERROR)
+    {
+        file_writer.print(String.format("Error\n", lexer.getLine()));
+        file_writer.close();
+        
+        System.out.print("LEXICAL ERROR >> ");
+        System.out.print("[");
+        System.out.print(lexer.getLine());
+        System.out.print(":");
+        System.out.print(lexer.getCharPos());
+        System.out.print("]\n");
+        System.exit(0);
+    }
     //System.out.print(s.sym);
     System.out.print("[");
     System.out.print(lexer.getLine());
     System.out.print(":");
     System.out.print(lexer.getCharPos());
-    System.out.print("] ");
+    System.out.print("]");
     System.out.print(TokenNames.terminalNames[s.sym]);
     if (s.value != null)
     {
