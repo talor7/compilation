@@ -1,15 +1,19 @@
 package AST;
 
+import TYPES.*;
+import SYMBOL_TABLE.*;
+
+/**
+ * AST_STMT_RETURN
+ */
 public class AST_STMT_RETURN extends AST_STMT
 {
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public AST_EXP exp;
 
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
+    public AST_EXP exp;
+
+	/******************/
+	/* CONSTRUCTOR(S) */
+	/******************/
 	public AST_STMT_RETURN(AST_EXP exp)
 	{
 		/******************************/
@@ -17,34 +21,50 @@ public class AST_STMT_RETURN extends AST_STMT
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		if (exp != null) System.out.print("====================== stmt -> RETURN exp;\n");
+		if (exp == null) System.out.print("====================== stmt -> RETURN;\n");
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
 		this.exp = exp;
 	}
-
-	/************************************************************/
-	/* The printing message for a function declaration AST node */
-	/************************************************************/
+	
+	/***********************************************/
+	/* The default message for an exp var AST node */
+	/***********************************************/
 	public void PrintMe()
 	{
-		/*************************************/
-		/* AST NODE TYPE = AST SUBSCRIPT VAR */
-		/*************************************/
-		System.out.print("AST NODE STMT RETURN\n");
+		/************************************/
+		/* AST NODE TYPE = RETURN STMT AST NODE */
+		/************************************/
+		System.out.print("AST NODE RETURN STMT\n");
 
 		/*****************************/
 		/* RECURSIVELY PRINT exp ... */
 		/*****************************/
 		if (exp != null) exp.PrintMe();
-
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
+		
+		/*********************************/
+		/* Print to AST GRAPHIZ DOT file */
+		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"RETURN");
+			"RETURN STMT\n");
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+			
+	}
+    
+	public TYPE SemantMe() throws Exception
+	{
+        // TODO: check return value
+		return null;
 	}
 }

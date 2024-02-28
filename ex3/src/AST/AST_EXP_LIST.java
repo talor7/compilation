@@ -1,5 +1,8 @@
 package AST;
 
+import TYPES.*;
+import SYMBOL_TABLE.*;
+
 public class AST_EXP_LIST extends AST_Node
 {
 	/****************/
@@ -18,17 +21,27 @@ public class AST_EXP_LIST extends AST_Node
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		if (tail != null) System.out.print("====================== exps -> exp, exps\n");
+		if (tail == null) System.out.print("====================== exps -> exp      \n");
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
 		this.head = head;
 		this.tail = tail;
 	}
+
 	/******************************************************/
-	/* The printing message for a statement list AST node */
+	/* The printing message for a expresion list AST node */
 	/******************************************************/
 	public void PrintMe()
 	{
-		/********************************/
-		/* AST NODE TYPE = AST EXP LIST */
-		/********************************/
+		/**************************************/
+		/* AST NODE TYPE = AST EXPRESION LIST */
+		/**************************************/
 		System.out.print("AST NODE EXP LIST\n");
 
 		/*************************************/
@@ -50,4 +63,11 @@ public class AST_EXP_LIST extends AST_Node
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
 		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
 	}
+
+	public TYPE SemantMe() throws Exception
+	{
+        // TODO
+        return null;
+	}
+	
 }

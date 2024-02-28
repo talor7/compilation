@@ -3,7 +3,7 @@ package AST;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
-public class AST_EXP_VAR_SIMPLE extends AST_EXP_VAR
+public class AST_VAR_SIMPLE extends AST_VAR
 {
 	/************************/
 	/* simple variable name */
@@ -13,14 +13,21 @@ public class AST_EXP_VAR_SIMPLE extends AST_EXP_VAR
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_VAR_SIMPLE(String name)
+	public AST_VAR_SIMPLE(String name)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
-
+	
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
 		System.out.format("====================== var -> ID( %s )\n",name);
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
 		this.name = name;
 	}
 
@@ -34,15 +41,17 @@ public class AST_EXP_VAR_SIMPLE extends AST_EXP_VAR
 		/**********************************/
 		System.out.format("AST NODE SIMPLE VAR( %s )\n",name);
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
+		/*********************************/
+		/* Print to AST GRAPHIZ DOT file */
+		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
 	}
-	public TYPE SemantMe()
+
+	public TYPE SemantMe() throws Exception
 	{
-		return SYMBOL_TABLE.getInstance().find(name);
+        // TODO
+        return null;
 	}
 }

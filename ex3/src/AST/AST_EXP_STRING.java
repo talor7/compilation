@@ -1,7 +1,11 @@
 package AST;
 
 import TYPES.*;
+import SYMBOL_TABLE.*;
 
+/**
+ * AST_EXP_STRING
+ */
 public class AST_EXP_STRING extends AST_EXP
 {
 	public String value;
@@ -16,29 +20,38 @@ public class AST_EXP_STRING extends AST_EXP
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		System.out.format("====================== exp -> STRING( %s )\n", value);
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		System.out.format("====================== exp -> string( %s )\n", value);
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
 		this.value = value;
 	}
 
-	/******************************************************/
-	/* The printing message for a STRING EXP AST node */
-	/******************************************************/
+	/************************************************/
+	/* The printing message for an STRING EXP AST node */
+	/************************************************/
 	public void PrintMe()
 	{
 		/*******************************/
 		/* AST NODE TYPE = AST STRING EXP */
 		/*******************************/
-		System.out.format("AST NODE STRING( %s )\n",value);
+		System.out.format("AST NODE STRING ( %s )\n",value);
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
+		/*********************************/
+		/* Print to AST GRAPHIZ DOT file */
+		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			String.format("STRING\n%s",value.replace('"','\'')));
+			String.format("STRING(%s)",value.replace('"','\'')));
 	}
-	public TYPE SemantMe()
+
+	public TYPE SemantMe() throws Exception
 	{
-		return TYPE_STRING.getInstance();
+        // TODO
+        return null;
 	}
 }

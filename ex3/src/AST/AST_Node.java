@@ -2,6 +2,7 @@ package AST;
 
 public abstract class AST_Node
 {
+	public int line;
 	/*******************************************/
 	/* The serial number is for debug purposes */
 	/* In particular, it can help in creating  */
@@ -16,4 +17,9 @@ public abstract class AST_Node
 	{
 		System.out.print("AST NODE UNKNOWN\n");
 	}
+
+	public void SetLine(int line)
+    {
+        this.line = line;
+    }
 }

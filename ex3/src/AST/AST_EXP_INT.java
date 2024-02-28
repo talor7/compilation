@@ -1,6 +1,7 @@
 package AST;
 
 import TYPES.*;
+import SYMBOL_TABLE.*;
 
 public class AST_EXP_INT extends AST_EXP
 {
@@ -16,7 +17,14 @@ public class AST_EXP_INT extends AST_EXP
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
 		System.out.format("====================== exp -> INT( %d )\n", value);
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
 		this.value = value;
 	}
 
@@ -30,15 +38,17 @@ public class AST_EXP_INT extends AST_EXP
 		/*******************************/
 		System.out.format("AST NODE INT( %d )\n",value);
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
+		/*********************************/
+		/* Print to AST GRAPHIZ DOT file */
+		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			String.format("INT(%d)",value));
 	}
-	public TYPE SemantMe()
+
+	public TYPE SemantMe() throws Exception
 	{
-		return TYPE_INT.getInstance();
+        // TODO
+        return null;
 	}
 }

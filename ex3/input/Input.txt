@@ -1,3 +1,7 @@
+
+array IntArray = int[];
+array IntMat = IntArray[];
+
 string left := "LEFT";
 string right := "RIGHT";
 
