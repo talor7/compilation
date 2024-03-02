@@ -64,7 +64,20 @@ public class AST_STMT_ASSIGN extends AST_STMT
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
+        TYPE varType = var.SemantMe();
+        TYPE expType = exp.SemantMe();
+        
+        if (exp instanceof AST_EXP_NIL)
+        {
+            if (!varType.isClass() && !varType.isArray())
+                throw new Exception(String.format("ERROR(%d)\n", line));
+        }
+        else if ((!expType.isClass() || !varType.isClass()) && varType != expType)
+            throw new Exception(String.format("ERROR(%d)\n", line));
+        else if ((expType.isClass() && varType.isClass())
+            && !((TYPE_CLASS)expType).isSubClassOf(((TYPE_CLASS)varType)))
+            throw new Exception(String.format("ERROR(%d)\n", line));
+            
         return null;
 	}
 }

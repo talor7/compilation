@@ -48,7 +48,6 @@ public class AST_EXP_INT extends AST_EXP
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+        return TYPE_INT.getInstance();
 	}
 }

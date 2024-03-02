@@ -11,11 +11,12 @@ public class AST_DEC_CLASS extends AST_DEC
 	public String id;
     public String superid;
     public AST_CFIELD_LIST cfieldl;
+    public int idLine;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_CLASS(String id, String superid, AST_CFIELD_LIST cfieldl)	{
+	public AST_DEC_CLASS(String id, String superid, AST_CFIELD_LIST cfieldl, int idLine)	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
@@ -34,6 +35,7 @@ public class AST_DEC_CLASS extends AST_DEC
 		this.id = id;
 		this.superid = superid;
 		this.cfieldl = cfieldl;
+        this.idLine = idLine;
 	}
 
 	/******************************************************/
@@ -70,27 +72,51 @@ public class AST_DEC_CLASS extends AST_DEC
 	}
 	
 	public TYPE SemantMe() throws Exception
-	{	
-        // TODO
-        
-		SYMBOL_TABLE.getInstance().beginScope();
+	{
+        // check name
+        // check not defined
+        TYPE previouslyDefined = SYMBOL_TABLE.getInstance().find(id);
+        if (previouslyDefined != null)
+            throw new Exception(String.format("ERROR(%d)\n", idLine));
 
         TYPE father = null;
         if (superid != null)
         {
             father = SYMBOL_TABLE.getInstance().find(superid);
             if (father == null || !(father instanceof TYPE_CLASS))
-                throw new Exception(String.format("Error(%d)\n", line));
+                throw new Exception(String.format("ERROR(%d)\n", idLine));
         }
 
-        // add father's data members to scope and then start another scope??
-
-		TYPE_CLASS t = new TYPE_CLASS((TYPE_CLASS)father, id, cfieldl.SemantMe());
-
-		SYMBOL_TABLE.getInstance().endScope();
+		TYPE_CLASS t = new TYPE_CLASS((TYPE_CLASS)father, id, null);
 
 		SYMBOL_TABLE.getInstance().enter(id, t);
+
+        int scopeCounter = StartFatherScope((TYPE_CLASS)father) + 1;
+
+		SYMBOL_TABLE.getInstance().beginScope();
+
+        cfieldl.SemantMe(t);
+
+        for (int i = 0; i < scopeCounter; i++)
+		    SYMBOL_TABLE.getInstance().endScope();
         
 		return null;
 	}
+
+    private int StartFatherScope(TYPE_CLASS father)
+    {
+        if (father == null)
+            return 0;
+        
+        TYPE_CLASS nextFather = father.father;
+        int counter = StartFatherScope(nextFather);
+        
+        SYMBOL_TABLE.getInstance().beginScope();
+        for (TYPE_CLASS_VAR_DEC_LIST it = ((TYPE_CLASS)father).data_members; it  != null; it = it.tail)
+        {
+            SYMBOL_TABLE.getInstance().enter(it.head.name, it.head.t);
+        }
+        
+        return counter + 1;
+    }
 }

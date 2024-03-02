@@ -77,7 +77,46 @@ public class AST_EXP_BINOP extends AST_EXP
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+        TYPE leftType = left.SemantMe();
+        TYPE rightType = right.SemantMe();
+        if (OP == 0) // +
+        {
+            if (leftType == TYPE_STRING.getInstance() && rightType == TYPE_STRING.getInstance())
+                return TYPE_STRING.getInstance();
+			if (leftType == TYPE_INT.getInstance() && rightType == TYPE_INT.getInstance())
+                return TYPE_INT.getInstance();
+				
+			throw new Exception(String.format("ERROR(%d)\n", line));
+        }
+        else if (OP == 6) // =
+        {
+            if (leftType == rightType)
+                return TYPE_INT.getInstance();
+            
+            if (left instanceof AST_EXP_NIL && (rightType.isClass() || rightType.isArray()))
+                return TYPE_INT.getInstance();
+            if (right instanceof AST_EXP_NIL && (leftType.isClass() || leftType.isArray()))
+                return TYPE_INT.getInstance();
+            
+            if (leftType.isClass() && rightType.isClass()
+                && (((TYPE_CLASS)leftType).isSubClassOf(((TYPE_CLASS)rightType))
+                     || ((TYPE_CLASS)rightType).isSubClassOf(((TYPE_CLASS)leftType))))
+                return TYPE_INT.getInstance();
+        }
+        else if (OP == 3) // /
+        {
+            if (leftType == TYPE_INT.getInstance() && rightType == TYPE_INT.getInstance())
+            {
+                if (!(right instanceof AST_EXP_INT) || ((AST_EXP_INT)right).value != 0)
+                    return TYPE_INT.getInstance();
+            }
+        }
+        else
+        {
+            if (leftType == TYPE_INT.getInstance() && rightType == TYPE_INT.getInstance())
+                return TYPE_INT.getInstance();
+        }
+
+        throw new Exception(String.format("ERROR(%d)\n", line));
 	}
 }

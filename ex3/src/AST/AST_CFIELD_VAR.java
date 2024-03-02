@@ -55,7 +55,24 @@ public class AST_CFIELD_VAR extends AST_CFIELD
     
 	public TYPE SemantMe() throws Exception
 	{
+        TYPE previouslyDefined = SYMBOL_TABLE.getInstance().findNotGlobal(var.id);
+        if (previouslyDefined != null)
+            throw new Exception(String.format("ERROR(%d)\n", line));
+
 		TYPE t = var.SemantMe();
-		return t;
+        if (var instanceof AST_DEC_VAR_EXP)
+        {
+            AST_EXP exp = ((AST_DEC_VAR_EXP)var).exp;
+            
+            if (exp == null
+                || exp instanceof AST_EXP_INT
+                || exp instanceof AST_EXP_STRING
+                || exp instanceof AST_EXP_NIL)
+            {
+                return new TYPE_CLASS_VAR_DEC(t, var.id);
+            }
+        }
+
+        throw new Exception(String.format("ERROR(%d)\n", line));
 	}
 }

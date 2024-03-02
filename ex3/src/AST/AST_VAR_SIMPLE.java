@@ -51,7 +51,10 @@ public class AST_VAR_SIMPLE extends AST_VAR
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+        TYPE varType = SYMBOL_TABLE.getInstance().find(name);
+        if (varType == null
+            || !(varType instanceof TYPE_VAR))
+            throw new Exception(String.format("ERROR(%d)\n", line));
+        return ((TYPE_VAR)varType).t;
 	}
 }

@@ -64,10 +64,20 @@ public class AST_EXP_LIST extends AST_Node
 		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
 	}
 
-	public TYPE SemantMe() throws Exception
+	public TYPE_LIST SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+		if (tail == null)
+		{
+			return new TYPE_LIST(
+				head.SemantMe(),
+				null);
+		}
+		else
+		{
+			return new TYPE_LIST(
+				head.SemantMe(),
+				tail.SemantMe());
+		}
 	}
 	
 }

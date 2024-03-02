@@ -64,20 +64,22 @@ public class AST_CFIELD_LIST extends AST_Node
 		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
 	}
 
-	public TYPE_LIST SemantMe() throws Exception
+	public TYPE_CLASS_VAR_DEC_LIST SemantMe(TYPE_CLASS type) throws Exception
 	{
 		if (tail == null)
 		{
-			return new TYPE_LIST(
-				head.SemantMe(),
-				null);
+			type.data_members =  new TYPE_CLASS_VAR_DEC_LIST(
+				(TYPE_CLASS_VAR_DEC)head.SemantMe(),
+				type.data_members);
 		}
 		else
 		{
-			return new TYPE_LIST(
-				head.SemantMe(),
-				tail.SemantMe());
+			type.data_members =  new TYPE_CLASS_VAR_DEC_LIST(
+				(TYPE_CLASS_VAR_DEC)head.SemantMe(),
+				(TYPE_CLASS_VAR_DEC_LIST)type.data_members);
+            tail.SemantMe(type);
 		}
+        return null;
 	}
 	
 }

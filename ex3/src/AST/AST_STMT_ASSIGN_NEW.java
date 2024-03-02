@@ -65,7 +65,35 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
+        TYPE varType = var.SemantMe();
+
+        if (varType == TYPE_VOID.getInstance()
+            || (!varType.isClass() && !varType.isArray()))
+            throw new Exception(String.format("ERROR(%d)\n", line));
+
+        TYPE expType = nexp.SemantMe();
+        if (expType.isClass() && varType.isClass())
+        {
+            if (nexp.exp != null)
+                throw new Exception(String.format("ERROR(%d)\n", line));
+            if (!((TYPE_CLASS)expType).isSubClassOf(((TYPE_CLASS)varType)))
+                throw new Exception(String.format("ERROR(%d)\n", line));
+        }
+        else if (varType.isArray())
+        {
+            if (nexp.exp == null)
+                throw new Exception(String.format("ERROR(%d)\n", line));
+            if (((TYPE_ARRAY)varType).type.isClass() && expType.isClass())
+            {
+                if (!((TYPE_CLASS)expType).isSubClassOf((TYPE_CLASS)((TYPE_ARRAY)varType).type))
+                    throw new Exception(String.format("ERROR(%d)\n", line));
+            }
+            else if (((TYPE_ARRAY)varType).type != expType)
+                throw new Exception(String.format("ERROR(%d)\n", line));
+        }
+        else if (expType != varType)
+            throw new Exception(String.format("ERROR(%d)\n", line));
+        
         return null;
 	}
 }

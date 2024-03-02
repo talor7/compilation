@@ -19,7 +19,7 @@ parser code
     }
     public void report_error(String message, Object info)
     {
-        file_writer.print(String.format("Error(%d)\n", lexer.getLine()));
+        file_writer.print(String.format("ERROR(%d)\n", lexer.getLine()));
         file_writer.close();
         
         System.out.print("ERROR >> ");
@@ -42,7 +42,7 @@ scan with
     s = lexer.next_token();
     if (s.sym == TokenNames.ERROR)
     {
-        file_writer.print("Error\n");
+        file_writer.print("ERROR\n");
         file_writer.close();
         
         System.out.print("LEXICAL ERROR >> ");
@@ -129,6 +129,7 @@ non terminal AST_ARRAY_TYPEDEF arrayTypedef;
 non terminal AST_DEC_VAR varDec;
 non terminal AST_DEC_FUNC funcDec;
 non terminal AST_DEC_CLASS classDec;
+non terminal AST_ID_LINE idLine;
 
 /***********************/
 /* OPERATOR PRECEDENCE */
@@ -242,6 +243,9 @@ funcDec     ::=     type:t ID:id LPAREN RPAREN LBRACE stmtList:sList RBRACE     
                     | type:t ID:id LPAREN typeIdList:tiList RPAREN LBRACE stmtList:sList RBRACE {: RESULT = new AST_DEC_FUNC(t, id, tiList, sList); RESULT.SetLine(line); :}
                     ;
 
-classDec    ::=     CLASS ID:id LBRACE cFieldList:cfList RBRACE                                 {: RESULT = new AST_DEC_CLASS(id, null, cfList); RESULT.SetLine(line); :}
-                    | CLASS ID:id EXTENDS ID:superid LBRACE cFieldList:cfList RBRACE            {: RESULT = new AST_DEC_CLASS(id, superid, cfList); RESULT.SetLine(line); :}
+classDec    ::=     CLASS idLine:idl LBRACE cFieldList:cfList RBRACE                                {: RESULT = new AST_DEC_CLASS(idl.id, null, cfList, idl.line); RESULT.SetLine(line); :}
+                    | CLASS idLine:idl EXTENDS ID:superid LBRACE cFieldList:cfList RBRACE           {: RESULT = new AST_DEC_CLASS(idl.id, superid, cfList, idl.line); RESULT.SetLine(line); :}
+                    ;
+
+idLine      ::=     ID:id                                                                           {: RESULT = new AST_ID_LINE(id); RESULT.SetLine(line); :}
                     ;

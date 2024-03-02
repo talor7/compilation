@@ -62,7 +62,11 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+        TYPE varType = var.SemantMe();
+        if (!varType.isArray()
+            || subscript.SemantMe() != TYPE_INT.getInstance())
+            throw new Exception(String.format("ERROR(%d)\n", line));
+        
+        return ((TYPE_ARRAY)varType).type;
 	}
 }

@@ -61,7 +61,28 @@ public class AST_VAR_FIELD extends AST_VAR
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+        TYPE varType = var.SemantMe();
+        if (varType == null
+            || !varType.isClass())
+            throw new Exception(String.format("ERROR(%d)\n", line));
+        
+        TYPE_CLASS classType = (TYPE_CLASS) varType;
+        TYPE fieldType = null;
+        while (classType != null && fieldType == null)
+        {
+            for (TYPE_CLASS_VAR_DEC_LIST data_member_list = classType.data_members; data_member_list != null; data_member_list = data_member_list.tail)
+            {
+                if (data_member_list.head.name.equals(fieldName))
+                {
+                    fieldType = data_member_list.head.t;
+                    break;
+                }
+            }
+            classType = classType.father;
+        }
+        if (fieldType == null || fieldType.isFunction())
+            throw new Exception(String.format("ERROR(%d)\n", line));
+        
+        return ((TYPE_VAR)fieldType).t;
 	}
 }

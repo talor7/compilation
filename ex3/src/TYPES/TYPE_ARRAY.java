@@ -13,6 +13,5 @@ public class TYPE_ARRAY extends TYPE
 		this.type = type;
 	}
 
-	public boolean isClass() { return true; }
 	public boolean isArray() { return true; }
 }

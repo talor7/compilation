@@ -69,10 +69,10 @@ public class AST_TYPE extends AST_Node
 		if (type == 3)
         {
             TYPE symbolType = SYMBOL_TABLE.getInstance().find(id);
-            if (symbolType != null && symbolType.isClass())
+            if (symbolType != null && (symbolType.isClass() || symbolType.isArray()))
                 return symbolType;
         }
         
-        throw new Exception(String.format("Error(%d)\n", line));
+        throw new Exception(String.format("ERROR(%d)\n", line));
 	}
 }

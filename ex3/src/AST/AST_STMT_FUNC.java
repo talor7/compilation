@@ -70,15 +70,59 @@ public class AST_STMT_FUNC extends AST_STMT
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
+		TYPE functionType = null;
         if (v == null)
         {
-            // TODO: check if function exists and if the parameters match
+            functionType = SYMBOL_TABLE.getInstance().find(id);
+            if (functionType == null || !functionType.isFunction())
+                throw new Exception(String.format("ERROR(%d)\n", line));
         }
         else
         {
-            // TODO: check if function exists in the class and if the parameters match
+            TYPE varType = v.SemantMe();
+            if (!varType.isClass())
+                throw new Exception(String.format("ERROR(%d)\n", line));
+            TYPE_CLASS classType = (TYPE_CLASS) varType;
+            while (classType != null && functionType == null)
+            {
+                for (TYPE_CLASS_VAR_DEC_LIST data_member_list = classType.data_members; data_member_list != null; data_member_list = data_member_list.tail)
+                {
+                    if (data_member_list.head.name.equals(id))
+                    {
+                        functionType = data_member_list.head.t;
+                        break;
+                    }
+                }
+                classType = classType.father;
+            }
+            if (functionType == null || !functionType.isFunction())
+                throw new Exception(String.format("ERROR(%d)\n", line));
         }
+
+        TYPE_LIST paramsTypes = null;
+        if (expl != null)
+            paramsTypes = expl.SemantMe();
+        TYPE_LIST funcParamsTypes = ((TYPE_FUNCTION)functionType).params;
+        while (paramsTypes != null && funcParamsTypes != null)
+        {
+            if (paramsTypes.head == null) // nil
+            {
+                if (!funcParamsTypes.head.isClass() && !funcParamsTypes.head.isArray())
+                    throw new Exception(String.format("ERROR(%d)\n", line));
+            }
+            else if (funcParamsTypes.head.isClass())
+            {
+                if (!paramsTypes.head.isClass())
+                    throw new Exception(String.format("ERROR(%d)\n", line));
+                if (!((TYPE_CLASS)paramsTypes.head).isSubClassOf((TYPE_CLASS)funcParamsTypes.head))
+                    throw new Exception(String.format("ERROR(%d)\n", line));
+            }
+            else if (paramsTypes.head != funcParamsTypes.head)
+                throw new Exception(String.format("ERROR(%d)\n", line));
+            paramsTypes = paramsTypes.tail;
+            funcParamsTypes = funcParamsTypes.tail;
+        }
+        
         return null;
 	}
 }

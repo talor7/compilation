@@ -73,15 +73,26 @@ public class AST_DEC_FUNC extends AST_DEC
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO: check the name of the function
 		TYPE t;
 		TYPE returnType = null;
-		TYPE_LIST type_list = null;
 
 		/*******************/
 		/* [0] return type */
 		/*******************/
 		returnType = type.SemantMe();
+
+        // check name
+        // check not defined in current scope
+        TYPE previouslyDefined = SYMBOL_TABLE.getInstance().findInCurrentScope(id);
+        if (previouslyDefined != null)
+            throw new Exception(String.format("ERROR(%d)\n", type.line));
+        
+        previouslyDefined = SYMBOL_TABLE.getInstance().findNotGlobal(id);
+
+        TYPE_FUNCTION thisType = new TYPE_FUNCTION(returnType, id, null);
+		SYMBOL_TABLE.getInstance().enter(id, thisType);
+
+        SYMBOL_TABLE.getInstance().currentFuncReturnType = returnType;
 	
 		/****************************/
 		/* [1] Begin Function Scope */
@@ -91,12 +102,55 @@ public class AST_DEC_FUNC extends AST_DEC
 		/***************************/
 		/* [2] Semant Input Params */
 		/***************************/
+		TYPE_LIST tail = null;
 		for (AST_TYPEID_LIST it = args; it  != null; it = it.tail)
 		{
 			t = it.headt.SemantMe();
-            type_list = new TYPE_LIST(t, type_list);
-            SYMBOL_TABLE.getInstance().enter(it.headid, t);
+
+            TYPE previouslyDefinedVar = SYMBOL_TABLE.getInstance().findInCurrentScope(it.headid);
+            if (previouslyDefinedVar != null)
+                throw new Exception(String.format("ERROR(%d)\n", it.line));
+    
+            if (t == TYPE_VOID.getInstance())
+                throw new Exception(String.format("ERROR(%d)\n", it.line));
+            if (tail == null)
+            {
+                thisType.params = new TYPE_LIST(t, null);
+                tail = thisType.params;
+            }
+            else
+            {
+                tail.tail = new TYPE_LIST(t, null);
+                tail = tail.tail;
+            }
+            SYMBOL_TABLE.getInstance().enter(it.headid, new TYPE_VAR(t, it.headid));
 		}
+        
+        // check if legal in terms of overriding
+        if (previouslyDefined != null)
+        {
+			//test for shadowing a function
+            if (!(previouslyDefined instanceof TYPE_FUNCTION))
+                throw new Exception(String.format("ERROR(%d)\n", type.line));
+            TYPE_FUNCTION prevFunc = (TYPE_FUNCTION)previouslyDefined;
+            //check for matching return types
+            if (prevFunc.returnType != returnType)
+                throw new Exception(String.format("ERROR(%d)\n", type.line));
+
+			//check for matching parmeter types
+            TYPE_LIST c_type_list = thisType.params;
+            TYPE_LIST prev_type_list = prevFunc.params;
+            while (c_type_list != null && prev_type_list != null)
+            {
+                if (c_type_list.head != prev_type_list.head)
+                    throw new Exception(String.format("ERROR(%d)\n", type.line));
+                c_type_list = c_type_list.tail;
+                prev_type_list = prev_type_list.tail;
+            }
+            
+            if (c_type_list != null || prev_type_list != null)
+                throw new Exception(String.format("ERROR(%d)\n", type.line));
+        }
 
 		/*******************/
 		/* [3] Semant Body */
@@ -108,12 +162,8 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*****************/
 		SYMBOL_TABLE.getInstance().endScope();
 
-		/***************************************************/
-		/* [5] Enter the Function Type to the Symbol Table */
-		/***************************************************/
-        TYPE thisType = new TYPE_FUNCTION(returnType, id, type_list);
-		SYMBOL_TABLE.getInstance().enter(id, thisType);
+        SYMBOL_TABLE.getInstance().currentFuncReturnType = null;
 
-		return new TYPE_CLASS_VAR_DEC(thisType, id);		
+		return thisType;
 	}
 }

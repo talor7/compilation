@@ -26,6 +26,9 @@ public class SYMBOL_TABLE
 	private SYMBOL_TABLE_ENTRY[] table = new SYMBOL_TABLE_ENTRY[hashArraySize];
 	private SYMBOL_TABLE_ENTRY top;
 	private int top_index = 0;
+
+    public boolean debug = false;
+    public TYPE currentFuncReturnType = null;
 	
 	/**************************************************************/
 	/* A very primitive hash function for exposition purposes ... */
@@ -98,6 +101,48 @@ public class SYMBOL_TABLE
 		return null;
 	}
 
+	public TYPE findInCurrentScope(String name)
+	{
+		SYMBOL_TABLE_ENTRY e;
+				
+		for (e = top; e != null; e = e.prevtop)
+		{
+			if (e.name.equals("SCOPE-BOUNDARY"))
+			{
+				return null;
+			}
+			
+			if (name.equals(e.name))
+			{
+				return e.type;
+			}
+		}
+		
+		return null;
+	}
+
+	public TYPE findNotGlobal(String name)
+	{
+		SYMBOL_TABLE_ENTRY e;
+        TYPE returnValue = null;
+				
+		for (e = table[hash(name)]; e != null; e = e.prevtop)
+		{
+			if (e.name.equals("SCOPE-BOUNDARY"))
+			{
+                if (returnValue != null)
+                    return returnValue;
+			}
+			
+			if (name.equals(e.name))
+			{
+				returnValue = e.type;
+			}
+		}
+		
+		return null;
+	}
+
 	/***************************************************************************/
 	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
 	/***************************************************************************/
@@ -151,6 +196,9 @@ public class SYMBOL_TABLE
 	
 	public void PrintMe()
 	{
+        if (!debug)
+            return;
+        
 		int i=0;
 		int j=0;
 		String dirname="./output/";

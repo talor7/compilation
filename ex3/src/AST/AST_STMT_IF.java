@@ -59,8 +59,8 @@ public class AST_STMT_IF extends AST_STMT
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO: check if the condition is int
-        cond.SemantMe();
+        if (cond.SemantMe() != TYPE_INT.getInstance())
+            throw new Exception(String.format("ERROR(%d)\n", cond.line));
 
 		SYMBOL_TABLE.getInstance().beginScope();
 

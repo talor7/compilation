@@ -51,7 +51,6 @@ public class AST_EXP_STRING extends AST_EXP
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+        return TYPE_STRING.getInstance();
 	}
 }

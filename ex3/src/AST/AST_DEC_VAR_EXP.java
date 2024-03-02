@@ -10,7 +10,6 @@ public class AST_DEC_VAR_EXP extends AST_DEC_VAR
 {
 
     public AST_TYPE type;
-    public String id;
     public AST_EXP exp;
 
     /******************/
@@ -71,10 +70,34 @@ public class AST_DEC_VAR_EXP extends AST_DEC_VAR
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
+        // check name
+        // check not defined in current scope
+        TYPE previouslyDefined = SYMBOL_TABLE.getInstance().findInCurrentScope(id);
+        if (previouslyDefined != null)
+            throw new Exception(String.format("ERROR(%d)\n", line));
+
         TYPE varType = type.SemantMe();
-		SYMBOL_TABLE.getInstance().enter(id, varType);
-        return null;
+
+        if (varType == TYPE_VOID.getInstance())
+            throw new Exception(String.format("ERROR(%d)\n", line));
+
+        if (exp != null && exp instanceof AST_EXP_NIL && !varType.isClass() && !varType.isArray()) // assigning nil to primitive
+            throw new Exception(String.format("ERROR(%d)\n", line));
+        
+        if (exp != null && !(exp instanceof AST_EXP_NIL && (varType.isClass() || varType.isArray())))
+        {
+            TYPE expType = exp.SemantMe();
+            if (expType.isClass() && varType.isClass())
+            {
+                if (!((TYPE_CLASS)expType).isSubClassOf(((TYPE_CLASS)varType)))
+                    throw new Exception(String.format("ERROR(%d)\n", line));
+            }
+            else if (expType != varType)
+                throw new Exception(String.format("ERROR(%d)\n", line));
+        }
+
+		SYMBOL_TABLE.getInstance().enter(id, new TYPE_VAR(varType, id));
+        return new TYPE_VAR(varType, id);
 	}
 
 }

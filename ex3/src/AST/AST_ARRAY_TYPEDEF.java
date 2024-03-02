@@ -70,7 +70,7 @@ public class AST_ARRAY_TYPEDEF extends AST_DEC
         TYPE arrayType = type.SemantMe();
         if (arrayType == TYPE_VOID.getInstance())
         {
-            throw new Exception(String.format("Error(%d)\n", line));
+            throw new Exception(String.format("ERROR(%d)\n", line));
         }
 
 		SYMBOL_TABLE.getInstance().enter(id, new TYPE_ARRAY(arrayType, id));

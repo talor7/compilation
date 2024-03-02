@@ -71,7 +71,23 @@ public class AST_NEW_EXP extends AST_Node
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+        TYPE newType;
+        if (exp == null) // new class
+        {
+            newType = type.SemantMe();
+            if (!newType.isClass())
+                throw new Exception(String.format("ERROR(%d)\n", line));
+        }
+        else // new array
+        {
+            newType = type.SemantMe();
+            TYPE expType = exp.SemantMe();
+            if (expType != TYPE_INT.getInstance())
+                throw new Exception(String.format("ERROR(%d)\n", line));
+            
+            if (exp instanceof AST_EXP_INT && ((AST_EXP_INT)exp).value <= 0)
+                throw new Exception(String.format("ERROR(%d)\n", line));
+        }
+        return newType;
 	}
 }

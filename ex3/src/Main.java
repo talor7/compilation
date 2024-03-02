@@ -17,6 +17,8 @@ public class Main
 		PrintWriter file_writer;
 		String inputFilename = argv[0];
 		String outputFilename = argv[1];
+
+        boolean debug = false;
 		
 		try
 		{
@@ -48,7 +50,8 @@ public class Main
 			/*************************/
 			/* [6] Print the AST ... */
 			/*************************/
-			AST.PrintMe();
+			if (debug)
+                AST.PrintMe();
 
 			/**************************/
 			/* [7] Semant the AST ... */
@@ -60,9 +63,9 @@ public class Main
             }
             catch (Exception e)
             {
-                
                 file_writer.print(e.toString().replace("java.lang.Exception: ", ""));
                 System.out.println(e.toString().replace("java.lang.Exception: ", ""));
+                e.printStackTrace();
             }
 			
 			/*************************/
@@ -73,7 +76,8 @@ public class Main
 			/*************************************/
 			/* [9] Finalize AST GRAPHIZ DOT file */
 			/*************************************/
-			AST_GRAPHVIZ.getInstance().finalizeFile();
+			if (debug)
+                AST_GRAPHVIZ.getInstance().finalizeFile();
     	}
 		catch (Exception e)
 		{

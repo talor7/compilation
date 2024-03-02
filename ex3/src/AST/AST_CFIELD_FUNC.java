@@ -55,7 +55,7 @@ public class AST_CFIELD_FUNC extends AST_CFIELD
 
 	public TYPE SemantMe() throws Exception
 	{
-        // TODO
-        return null;
+        TYPE t = func.SemantMe();
+        return new TYPE_CLASS_VAR_DEC(t, func.id);
 	}
 }
